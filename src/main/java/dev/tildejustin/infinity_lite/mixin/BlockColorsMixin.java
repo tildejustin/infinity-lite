@@ -1,8 +1,7 @@
 package dev.tildejustin.infinity_lite.mixin;
 
-import dev.tildejustin.infinity_lite.NetherPortalBlockEntity;
+import dev.tildejustin.infinity_lite.InfinityLite;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.color.block.BlockColors;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -14,10 +13,7 @@ public abstract class BlockColorsMixin {
     private static void changePortalColorIfEnd(CallbackInfoReturnable<BlockColors> cir) {
         cir.getReturnValue().registerColorProvider((state, world, pos, tintIndex) -> {
             if (world != null && pos != null) {
-                BlockEntity blockEntity = world.getBlockEntity(pos);
-                if (blockEntity instanceof NetherPortalBlockEntity) {
-                    return (((NetherPortalBlockEntity) blockEntity).isEnd() ? 2 : 0xFFFFFF) & 0xFFFFFF;
-                }
+                return (state.get(InfinityLite.END) ? 2 : 0xFFFFFF) & 0xFFFFFF;
             }
             return 0xFFFFFF;
         }, Blocks.NETHER_PORTAL);

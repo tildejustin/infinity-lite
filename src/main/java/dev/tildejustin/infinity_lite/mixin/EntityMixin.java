@@ -1,7 +1,7 @@
 package dev.tildejustin.infinity_lite.mixin;
 
-import dev.tildejustin.infinity_lite.NetherPortalBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
+import dev.tildejustin.infinity_lite.InfinityLite;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -26,9 +26,9 @@ public abstract class EntityMixin {
     @Inject(method = "setInNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/pattern/BlockPattern$Result;getForwards()Lnet/minecraft/util/math/Direction;"))
     private void getPortalDest(BlockPos pos, CallbackInfo ci) {
         this.end = false;
-        BlockEntity blockEntity = this.world.getBlockEntity(pos);
-        if (blockEntity instanceof NetherPortalBlockEntity) {
-            this.end = ((NetherPortalBlockEntity) blockEntity).isEnd();
+        BlockState state = this.world.getBlockState(pos);
+        if (state.get(InfinityLite.END)) {
+            this.end = true;
         }
     }
 

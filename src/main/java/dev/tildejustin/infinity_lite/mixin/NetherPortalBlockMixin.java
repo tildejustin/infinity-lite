@@ -4,16 +4,15 @@ import com.google.common.collect.*;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tildejustin.infinity_lite.*;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.*;
 import net.minecraft.item.*;
 import net.minecraft.particle.*;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
-import net.minecraft.world.*;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,27 +21,33 @@ import java.util.*;
 import java.util.stream.*;
 
 @Mixin(NetherPortalBlock.class)
-public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
+public abstract class NetherPortalBlockMixin extends Block {
     @Shadow
     @Final
     public static EnumProperty<Direction.Axis> AXIS;
 
-    @Override
-    public @Nullable BlockEntity createBlockEntity(BlockView world) {
-        return new NetherPortalBlockEntity();
+    public NetherPortalBlockMixin(Settings settings) {
+        super(settings);
+    }
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void setDefaultEndState(Settings settings, CallbackInfo ci) {
+        this.setDefaultState(this.stateManager.getDefaultState().with(InfinityLite.END, false));
+    }
+
+    @Inject(method = "appendProperties", at = @At("TAIL"))
+    private void appendEndState(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
+        builder.add(InfinityLite.END);
     }
 
     @Dynamic // mcdev doesn't like @Coerce
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof NetherPortalBlockEntity) {
-            if (((NetherPortalBlockEntity) blockEntity).isEnd()) {
-                int i = 2;
-                Vec3d vec3d = Vec3d.unpackRgb(i);
-                double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
-                return new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
-            }
+        if (state.get(InfinityLite.END)) {
+            int i = 2;
+            Vec3d vec3d = Vec3d.unpackRgb(i);
+            double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
+            return new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
         }
         return original;
     }
@@ -69,8 +74,7 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
 
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
     private void stopPigmanSpawningIfEnd(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof NetherPortalBlockEntity && ((NetherPortalBlockEntity) blockEntity).isEnd()) {
+        if (state.get(InfinityLite.END)) {
             ci.cancel();
         }
     }
@@ -107,12 +111,7 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
             set.add(blockPos);
             BlockState blockState = world.getBlockState(blockPos);
             if (blockState == state) {
-                // rebuild chunk to fix colors
-                world.updateListeners(blockPos, blockState, blockState, 4);
-                BlockEntity blockEntity = world.getBlockEntity(blockPos);
-                if (blockEntity instanceof NetherPortalBlockEntity) {
-                    ((NetherPortalBlockEntity) blockEntity).setEnd(true);
-                }
+                world.setBlockState(blockPos, blockState.with(InfinityLite.END, true), 18);
 
                 BlockPos blockPos2 = blockPos.offset(direction);
                 if (!set.contains(blockPos2)) {
