@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.*;
 import net.minecraft.item.*;
 import net.minecraft.particle.*;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
@@ -31,8 +32,9 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
         return new NetherPortalBlockEntity();
     }
 
+    @Dynamic // mcdev doesn't like @Coerce
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
-    private @Coerce ParticleEffect customParticle(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
+    private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof NetherPortalBlockEntity) {
             if (((NetherPortalBlockEntity) blockEntity).isEnd()) {
@@ -62,6 +64,14 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
                     entity.remove();
                 }
             }
+        }
+    }
+
+    @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
+    private void stopPigmanSpawningIfEnd(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof NetherPortalBlockEntity && ((NetherPortalBlockEntity) blockEntity).isEnd()) {
+            ci.cancel();
         }
     }
 

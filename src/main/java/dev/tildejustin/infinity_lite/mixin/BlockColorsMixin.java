@@ -11,16 +11,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockColors.class)
 public abstract class BlockColorsMixin {
     @Inject(method = "create", at = @At(value = "TAIL"))
-    private static void setNetherPortalColor(CallbackInfoReturnable<BlockColors> cir) {
+    private static void changePortalColorIfEnd(CallbackInfoReturnable<BlockColors> cir) {
         cir.getReturnValue().registerColorProvider((state, world, pos, tintIndex) -> {
             if (world != null && pos != null) {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof NetherPortalBlockEntity) {
-                    int j = ((NetherPortalBlockEntity) blockEntity).isEnd() ? 2 : 0xFFFFFF;
-                    return j & 0xFFFFFF;
+                    return (((NetherPortalBlockEntity) blockEntity).isEnd() ? 2 : 0xFFFFFF) & 0xFFFFFF;
                 }
             }
-
             return 0xFFFFFF;
         }, Blocks.NETHER_PORTAL);
     }

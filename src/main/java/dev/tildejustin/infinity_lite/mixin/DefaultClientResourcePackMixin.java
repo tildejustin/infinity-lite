@@ -15,7 +15,7 @@ public abstract class DefaultClientResourcePackMixin {
     ModContainer mod = FabricLoader.getInstance().getModContainer("infinity-lite").get();
 
     @Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
-    private void findInputStream(ResourceType type, Identifier id, CallbackInfoReturnable<InputStream> cir) {
+    private void replaceAssets(ResourceType type, Identifier id, CallbackInfoReturnable<InputStream> cir) {
         mod.findPath("assets/" + id.getNamespace() + "/" + id.getPath()).ifPresent(path -> {
             try {
                 cir.setReturnValue(path.toUri().toURL().openStream());

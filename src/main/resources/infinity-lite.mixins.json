@@ -8,8 +8,7 @@
     "DefaultClientResourcePackMixin",
     "EntityMixin",
     "NetherPortalBlockMixin",
-    "ServerPlayerEntityMixin",
-    "accessor.BlockEntityTypeAccessor"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

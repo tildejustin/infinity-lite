@@ -24,7 +24,7 @@ public abstract class EntityMixin {
     private boolean end;
 
     @Inject(method = "setInNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/pattern/BlockPattern$Result;getForwards()Lnet/minecraft/util/math/Direction;"))
-    private void onSetInNetherPortal(BlockPos pos, CallbackInfo ci) {
+    private void getPortalDest(BlockPos pos, CallbackInfo ci) {
         this.end = false;
         BlockEntity blockEntity = this.world.getBlockEntity(pos);
         if (blockEntity instanceof NetherPortalBlockEntity) {
@@ -33,7 +33,7 @@ public abstract class EntityMixin {
     }
 
     @ModifyArg(method = "tickNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/entity/Entity;"))
-    private ServerWorld changeDimension(ServerWorld destination) {
+    private ServerWorld switchDestDimension(ServerWorld destination) {
         if (this.end) {
             return this.getServer().getWorld(World.END);
         }
