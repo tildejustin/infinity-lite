@@ -1,24 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "infinity-lite",
   "version": "${version}",
-  "name": "",
-  "description": "",
+  "name": "Infinity Lite",
+  "description": "20w14infinite port of changing portal dimension, but only to end",
   "authors": [
     "tildejustin"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/modid",
-    "sources": "https://github.com/tildejustin/modid",
-    "issues": "https://github.com/tildejustin/modid/issues"
+    "homepage": "https://modrinth.com/mod/infinity-lite",
+    "sources": "https://github.com/tildejustin/infinity-lite",
+    "issues": "https://github.com/tildejustin/infinity-lite/issues"
   },
   "license": "MPL-2.0",
-  "environment": "*",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.tildejustin.infinity_lite.InfinityLite"
+    ]
+  },
   "mixins": [
-    "modid.mixins.json"
+    "infinity-lite.mixins.json"
   ],
   "depends": {
-    "minecraft": "*",
+    "minecraft": "1.16.1",
     "fabricloader": ">=0.15.0"
   }
 }
