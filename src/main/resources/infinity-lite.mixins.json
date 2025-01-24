@@ -3,13 +3,17 @@
   "package": "dev.tildejustin.infinity_lite.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "AbstractFireBlockMixin",
     "BlockColorsMixin",
+    "BlockModelRendererMixin",
     "DebugHudMixin",
     "DefaultClientResourcePackMixin",
     "DimensionTypeMixin",
     "EntityMixin",
     "NetherPortalBlockMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "SkyPropertiesMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

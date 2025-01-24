@@ -9,6 +9,7 @@ import net.minecraft.entity.*;
 import net.minecraft.item.*;
 import net.minecraft.particle.*;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
@@ -22,10 +23,24 @@ import java.util.*;
 import java.util.stream.*;
 
 @Mixin(NetherPortalBlock.class)
-public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
+public abstract class NetherPortalBlockMixin extends Block implements BlockEntityProvider {
     @Shadow
     @Final
     public static EnumProperty<Direction.Axis> AXIS;
+
+    public NetherPortalBlockMixin(AbstractBlock.Settings settings) {
+        super(settings);
+    }
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void setDefaultEndState(AbstractBlock.Settings settings, CallbackInfo ci) {
+        this.setDefaultState(this.stateManager.getDefaultState().with(InfinityLite.tint, false));
+    }
+
+    @Inject(method = "appendProperties", at = @At("TAIL"))
+    private void appendEndState(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
+        builder.add(InfinityLite.tint);
+    }
 
     @Override
     public @Nullable BlockEntity createBlockEntity(BlockView world) {
@@ -107,8 +122,7 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
             set.add(blockPos);
             BlockState blockState = world.getBlockState(blockPos);
             if (blockState == state) {
-                // rebuild chunk to fix colors
-                world.updateListeners(blockPos, blockState, blockState, 4);
+                world.setBlockState(blockPos, state.with(InfinityLite.tint, true));
                 BlockEntity blockEntity = world.getBlockEntity(blockPos);
                 if (blockEntity instanceof NetherPortalBlockEntity) {
                     ((NetherPortalBlockEntity) blockEntity).setDimension(dim);

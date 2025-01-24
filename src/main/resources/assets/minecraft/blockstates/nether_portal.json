@@ -1,15 +1,15 @@
 {
   "variants": {
-    "axis=x,end=false": {
+    "axis=x,tint=false": {
       "model": "minecraft:block/nether_portal_ns"
     },
-    "axis=z,end=false": {
+    "axis=z,tint=false": {
       "model": "minecraft:block/nether_portal_ew"
     },
-    "axis=x,end=true": {
+    "axis=x,tint=true": {
       "model": "minecraft:block/neither_portal_ns"
     },
-    "axis=z,end=true": {
+    "axis=z,tint=true": {
       "model": "minecraft:block/neither_portal_ew"
     }
   }

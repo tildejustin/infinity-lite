@@ -3,3 +3,4 @@ accessible method net/minecraft/world/dimension/DimensionType <init> (Ljava/util
 accessible method net/minecraft/world/gen/chunk/ChunkGeneratorType <init> (Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/NoiseConfig;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;IIIZLjava/util/Optional;)V
 accessible method net/minecraft/world/biome/source/MultiNoiseBiomeSource <init> (JLjava/util/List;)V
 accessible method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V
+accessible field net/minecraft/client/render/chunk/ChunkRendererRegion world Lnet/minecraft/world/World;
