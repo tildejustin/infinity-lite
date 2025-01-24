@@ -1,6 +1,6 @@
 package dev.tildejustin.infinity_lite.mixin;
 
-import dev.tildejustin.infinity_lite.NetherPortalBlockEntity;
+import dev.tildejustin.infinity_lite.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -21,21 +21,21 @@ public abstract class EntityMixin {
     public abstract @Nullable MinecraftServer getServer();
 
     @Unique
-    private boolean end;
+    private int dimension;
 
     @Inject(method = "setInNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/pattern/BlockPattern$Result;getForwards()Lnet/minecraft/util/math/Direction;"))
     private void getPortalDest(BlockPos pos, CallbackInfo ci) {
-        this.end = false;
+        this.dimension = 0;
         BlockEntity blockEntity = this.world.getBlockEntity(pos);
         if (blockEntity instanceof NetherPortalBlockEntity) {
-            this.end = ((NetherPortalBlockEntity) blockEntity).isEnd();
+            this.dimension = ((NetherPortalBlockEntity) blockEntity).getDimension();
         }
     }
 
     @ModifyArg(method = "tickNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/entity/Entity;"))
     private ServerWorld switchDestDimension(ServerWorld destination) {
-        if (this.end) {
-            return this.getServer().getWorld(World.END);
+        if (this.dimension != 0) {
+            return this.getServer().getWorld(this.dimension == 260948822 ? InfinityLite.pZ4c : World.END);
         }
         return destination;
     }

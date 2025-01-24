@@ -37,10 +37,10 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof NetherPortalBlockEntity) {
-            if (((NetherPortalBlockEntity) blockEntity).isEnd()) {
-                int i = 2;
-                Vec3d vec3d = Vec3d.unpackRgb(i);
-                double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
+            int dim = ((NetherPortalBlockEntity) blockEntity).getDimension();
+            if (dim != 0) {
+                Vec3d vec3d = Vec3d.unpackRgb(dim);
+                double d = 1.0 + (double) (dim >> 16 & 0xFF) / 255.0;
                 return new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
             }
         }
@@ -57,10 +57,10 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
                 if (!string.isEmpty()) {
                     int dimension = DimensionHashHelper.getHash(string);
                     // only go to end dimension
-                    if (dimension != 2) {
+                    if (dimension != 2 && dimension != 260948822) {
                         return;
                     }
-                    this.teleportTo(world, pos, state);
+                    this.teleportTo(world, pos, state, dimension);
                     entity.remove();
                 }
             }
@@ -70,13 +70,13 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
     private void stopPigmanSpawningIfEnd(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof NetherPortalBlockEntity && ((NetherPortalBlockEntity) blockEntity).isEnd()) {
+        if (blockEntity instanceof NetherPortalBlockEntity && ((NetherPortalBlockEntity) blockEntity).getDimension() != 0) {
             ci.cancel();
         }
     }
 
     @Unique
-    private void teleportTo(World world, BlockPos pos, BlockState state) {
+    private void teleportTo(World world, BlockPos pos, BlockState state, int dim) {
         Set<BlockPos> set = Sets.newHashSet();
         Queue<BlockPos> queue = Queues.newArrayDeque();
         Direction.Axis axis = state.get(AXIS);
@@ -111,7 +111,7 @@ public abstract class NetherPortalBlockMixin implements BlockEntityProvider {
                 world.updateListeners(blockPos, blockState, blockState, 4);
                 BlockEntity blockEntity = world.getBlockEntity(blockPos);
                 if (blockEntity instanceof NetherPortalBlockEntity) {
-                    ((NetherPortalBlockEntity) blockEntity).setEnd(true);
+                    ((NetherPortalBlockEntity) blockEntity).setDimension(dim);
                 }
 
                 BlockPos blockPos2 = blockPos.offset(direction);

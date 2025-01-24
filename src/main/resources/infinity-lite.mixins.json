@@ -6,6 +6,7 @@
     "BlockColorsMixin",
     "DebugHudMixin",
     "DefaultClientResourcePackMixin",
+    "DimensionTypeMixin",
     "EntityMixin",
     "NetherPortalBlockMixin",
     "ServerPlayerEntityMixin"

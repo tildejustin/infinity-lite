@@ -16,7 +16,8 @@ public abstract class BlockColorsMixin {
             if (world != null && pos != null) {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof NetherPortalBlockEntity) {
-                    return (((NetherPortalBlockEntity) blockEntity).isEnd() ? 2 : 0xFFFFFF) & 0xFFFFFF;
+                    int dim = ((NetherPortalBlockEntity) blockEntity).getDimension();
+                    return (dim != 0 ? dim : 0xFFFFFF) & 0xFFFFFF;
                 }
             }
             return 0xFFFFFF;

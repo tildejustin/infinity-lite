@@ -7,7 +7,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import org.jetbrains.annotations.Nullable;
 
 public class NetherPortalBlockEntity extends BlockEntity {
-    private boolean end = false;
+    private int dimension = 0;
 
     public NetherPortalBlockEntity() {
         super(InfinityLite.type);
@@ -16,14 +16,14 @@ public class NetherPortalBlockEntity extends BlockEntity {
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        tag.putBoolean("End", this.end);
+        tag.putInt("Dimension", this.dimension);
         return tag;
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        this.end = tag.getBoolean("End");
+        this.dimension = tag.getInt("Dimension");
     }
 
 
@@ -38,11 +38,11 @@ public class NetherPortalBlockEntity extends BlockEntity {
         return this.toTag(new CompoundTag());
     }
 
-    public boolean isEnd() {
-        return this.end;
+    public int getDimension() {
+        return this.dimension;
     }
 
-    public void setEnd(boolean end) {
-        this.end = end;
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }
