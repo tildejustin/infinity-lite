@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ThrownEntityMixin {
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0))
     private boolean alsoCheckNeitherPortal(boolean original, @Local BlockState state) {
+        if (!InfinityLite.enabled) return original;
+
         return original || state.isOf(InfinityLite.NEITHER_PORTAL);
     }
 }

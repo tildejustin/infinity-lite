@@ -3,6 +3,7 @@ package dev.tildejustin.infinity_lite.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import com.mojang.authlib.GameProfile;
+import dev.tildejustin.infinity_lite.InfinityLite;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -24,17 +25,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @ModifyExpressionValue(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getRegistryKey()Lnet/minecraft/util/registry/RegistryKey;", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V")))
     private RegistryKey<World> doNotHardcodeEndSpawnIfFromNether(RegistryKey<World> dest) {
+        if (!InfinityLite.enabled) return dest;
+
         // anything other than end if not dest == end & curr == overworld
         return dest == World.END && this.getServerWorld().getRegistryKey() == World.OVERWORLD ? World.END : World.OVERWORLD;
     }
 
     @ModifyExpressionValue(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/dimension/DimensionType;isShrunk()Z", ordinal = 3))
     private boolean keepCoordsToEndIfFromNether(boolean original, ServerWorld dest) {
-        return dest.getRegistryKey() == World.END || original;
+        if (!InfinityLite.enabled) return original;
+
+        return original || dest.getRegistryKey() == World.END;
     }
 
     @WrapOperation(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;createEndSpawnPlatform(Lnet/minecraft/server/world/ServerWorld;)V"))
     private void makeSpawnPlatformInOldPosIfFromNether(ServerWorld dest, Operation<Void> original) {
+        if (!InfinityLite.enabled) {
+            original.call(dest);
+            return;
+        }
+
         if (this.getServerWorld().getRegistryKey() == World.OVERWORLD && dest.getRegistryKey() == World.END) {
             original.call(dest);
         } else {

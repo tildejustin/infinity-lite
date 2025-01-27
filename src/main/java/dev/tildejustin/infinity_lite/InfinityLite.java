@@ -4,4 +4,5 @@ import net.minecraft.block.Block;
 
 public class InfinityLite {
     public static Block NEITHER_PORTAL;
+    public static boolean enabled = true;
 }

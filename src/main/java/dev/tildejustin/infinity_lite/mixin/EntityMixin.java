@@ -25,6 +25,8 @@ public abstract class EntityMixin {
 
     @Inject(method = "setInNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/pattern/BlockPattern$Result;getForwards()Lnet/minecraft/util/math/Direction;"))
     private void getPortalDest(BlockPos pos, CallbackInfo ci) {
+        if (!InfinityLite.enabled) return;
+
         this.end = false;
         Block block = this.world.getBlockState(pos).getBlock();
         if (block == InfinityLite.NEITHER_PORTAL) {
@@ -35,8 +37,11 @@ public abstract class EntityMixin {
     @SuppressWarnings("DataFlowIssue")
     @ModifyArg(method = "tickNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/entity/Entity;"))
     private ServerWorld switchDestDimension(ServerWorld destination) {
+        if (!InfinityLite.enabled) return destination;
+
         if (this.end) {
             // int dim = 2;
+            // unfortunately dimensions do not have associated numbers in this version, so hardcoding is the best that can be done
             return this.getServer().getWorld(World.END);
         }
         return destination;

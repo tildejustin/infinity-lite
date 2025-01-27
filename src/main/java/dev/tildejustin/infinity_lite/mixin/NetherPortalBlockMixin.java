@@ -30,6 +30,8 @@ public abstract class NetherPortalBlockMixin {
     @Environment(EnvType.CLIENT)
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
+        if (!InfinityLite.enabled) return original;
+
         if ((Object) this instanceof NeitherPortalBlock) {
             int i = 2;
             Vec3d vec3d = Vec3d.unpackRgb(i);
@@ -41,6 +43,8 @@ public abstract class NetherPortalBlockMixin {
 
     @Inject(method = "onEntityCollision", at = @At("HEAD"))
     public void changeDimensionOfPortal(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo ci) {
+        if (!InfinityLite.enabled) return;
+
         if (entity instanceof ItemEntity) {
             ItemStack itemStack = ((ItemEntity) entity).getStack();
             if (itemStack.getItem() == Items.WRITTEN_BOOK || itemStack.getItem() == Items.WRITABLE_BOOK) {
@@ -59,6 +63,7 @@ public abstract class NetherPortalBlockMixin {
         }
     }
 
+    // bad mapping name, but better to keep it
     @Unique
     private void teleportTo(World world, BlockPos pos, BlockState state) {
         Set<BlockPos> set = Sets.newHashSet();
