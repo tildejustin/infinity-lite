@@ -19,6 +19,7 @@
   ],
   "depends": {
     "minecraft": "1.16.1",
-    "fabricloader": ">=0.15.0"
+    "fabricloader": ">=0.15.0",
+    "speedrunapi": "*"
   }
 }
