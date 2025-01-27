@@ -21,5 +21,10 @@
     "minecraft": "1.16.1",
     "fabricloader": ">=0.15.0",
     "speedrunapi": "*"
+  },
+  "custom": {
+    "speedrunapi": {
+      "config": "dev.tildejustin.infinity_lite.InfinityLite"
+    }
   }
 }
