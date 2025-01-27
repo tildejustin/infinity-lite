@@ -3,12 +3,11 @@ package dev.tildejustin.infinity_lite.mixin;
 import com.google.common.collect.*;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tildejustin.infinity_lite.*;
+import dev.tildejustin.infinity_lite.block.NeitherPortalBlock;
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.item.*;
 import net.minecraft.particle.*;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
@@ -21,29 +20,15 @@ import java.util.*;
 import java.util.stream.*;
 
 @Mixin(NetherPortalBlock.class)
-public abstract class NetherPortalBlockMixin extends Block {
+public abstract class NetherPortalBlockMixin {
     @Shadow
     @Final
     public static EnumProperty<Direction.Axis> AXIS;
 
-    public NetherPortalBlockMixin(Settings settings) {
-        super(settings);
-    }
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void setDefaultEndState(Settings settings, CallbackInfo ci) {
-        this.setDefaultState(this.stateManager.getDefaultState().with(InfinityLite.END, false));
-    }
-
-    @Inject(method = "appendProperties", at = @At("TAIL"))
-    private void appendEndState(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
-        builder.add(InfinityLite.END);
-    }
-
     @Dynamic // mcdev doesn't like @Coerce
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
-        if (state.get(InfinityLite.END)) {
+        if ((Object) this instanceof NeitherPortalBlock) {
             int i = 2;
             Vec3d vec3d = Vec3d.unpackRgb(i);
             double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
@@ -72,18 +57,12 @@ public abstract class NetherPortalBlockMixin extends Block {
         }
     }
 
-    @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-    private void stopPigmanSpawningIfEnd(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        if (state.get(InfinityLite.END)) {
-            ci.cancel();
-        }
-    }
-
     @Unique
     private void teleportTo(World world, BlockPos pos, BlockState state) {
         Set<BlockPos> set = Sets.newHashSet();
         Queue<BlockPos> queue = Queues.newArrayDeque();
         Direction.Axis axis = state.get(AXIS);
+        BlockState blockState = InfinityLite.NEITHER_PORTAL.getDefaultState().with(AXIS, axis);
         Direction direction;
         Direction direction2;
         switch (axis) {
@@ -109,9 +88,9 @@ public abstract class NetherPortalBlockMixin extends Block {
         BlockPos blockPos;
         while ((blockPos = queue.poll()) != null) {
             set.add(blockPos);
-            BlockState blockState = world.getBlockState(blockPos);
-            if (blockState == state) {
-                world.setBlockState(blockPos, blockState.with(InfinityLite.END, true), 18);
+            BlockState blockState2 = world.getBlockState(blockPos);
+            if (blockState2 == state) {
+                world.setBlockState(blockPos, blockState, 0b10010);
 
                 BlockPos blockPos2 = blockPos.offset(direction);
                 if (!set.contains(blockPos2)) {

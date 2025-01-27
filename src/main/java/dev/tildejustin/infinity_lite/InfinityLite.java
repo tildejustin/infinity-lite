@@ -1,7 +1,7 @@
 package dev.tildejustin.infinity_lite;
 
-import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.block.Block;
 
 public class InfinityLite {
-    public static final BooleanProperty END = BooleanProperty.of("end");
+    public static Block NEITHER_PORTAL;
 }
