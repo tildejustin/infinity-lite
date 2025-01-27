@@ -4,6 +4,7 @@ import com.google.common.collect.*;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tildejustin.infinity_lite.*;
 import dev.tildejustin.infinity_lite.block.NeitherPortalBlock;
+import net.fabricmc.api.*;
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.item.*;
@@ -26,6 +27,7 @@ public abstract class NetherPortalBlockMixin {
     public static EnumProperty<Direction.Axis> AXIS;
 
     @Dynamic // mcdev doesn't like @Coerce
+    @Environment(EnvType.CLIENT)
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
         if ((Object) this instanceof NeitherPortalBlock) {

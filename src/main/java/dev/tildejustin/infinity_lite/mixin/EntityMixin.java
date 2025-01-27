@@ -36,6 +36,7 @@ public abstract class EntityMixin {
     @ModifyArg(method = "tickNetherPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/entity/Entity;"))
     private ServerWorld switchDestDimension(ServerWorld destination) {
         if (this.end) {
+            // int dim = 2;
             return this.getServer().getWorld(World.END);
         }
         return destination;

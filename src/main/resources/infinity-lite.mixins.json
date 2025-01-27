@@ -4,13 +4,15 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "BlockColorsMixin",
-    "BlocksMixin",
     "DebugHudMixin",
     "DefaultClientResourcePackMixin",
+    "RenderLayersMixin"
+  ],
+  "mixins": [
+    "BlocksMixin",
     "EntityMixin",
     "NetherPortalBlockMixin",
     "PointOfInterestTypeMixin",
-    "RenderLayersMixin",
     "ServerPlayerEntityMixin",
     "ThrownEntityMixin"
   ],

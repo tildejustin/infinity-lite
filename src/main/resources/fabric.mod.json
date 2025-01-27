@@ -13,7 +13,7 @@
     "issues": "https://github.com/tildejustin/infinity-lite/issues"
   },
   "license": "MPL-2.0",
-  "environment": "client",
+  "environment": "*",
   "mixins": [
     "infinity-lite.mixins.json"
   ],
