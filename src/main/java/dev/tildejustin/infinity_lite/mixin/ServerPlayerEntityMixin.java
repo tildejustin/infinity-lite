@@ -47,13 +47,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
         if (this.getServerWorld().getRegistryKey() == World.OVERWORLD && dest.getRegistryKey() == World.END) {
             original.call(dest);
-        } else {
-            // ServerWorld#createEndSpawnPlatform
-            int x = MathHelper.floor(this.getX());
-            int y = MathHelper.floor(this.getY()) - 2;
-            int z = MathHelper.floor(this.getZ());
-            BlockPos.iterate(x - 2, y + 1, z - 2, x + 2, y + 3, z + 2).forEach(pos -> dest.setBlockState(pos, Blocks.AIR.getDefaultState()));
-            BlockPos.iterate(x - 2, y, z - 2, x + 2, y, z + 2).forEach(pos -> dest.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState()));
+            return;
         }
+
+        // ServerWorld#createEndSpawnPlatform
+        int x = MathHelper.floor(this.getX());
+        int y = MathHelper.floor(this.getY()) - 2;
+        int z = MathHelper.floor(this.getZ());
+        BlockPos.iterate(x - 2, y + 1, z - 2, x + 2, y + 3, z + 2).forEach(pos -> dest.setBlockState(pos, Blocks.AIR.getDefaultState()));
+        BlockPos.iterate(x - 2, y, z - 2, x + 2, y, z + 2).forEach(pos -> dest.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState()));
     }
 }
