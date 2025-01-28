@@ -7,6 +7,6 @@ import java.nio.charset.StandardCharsets;
 public class DimensionHashHelper {
     @SuppressWarnings("UnstableApiUsage")
     public static int getHash(String string) {
-        return Hashing.sha256().hashString(string + ":why_so_salty#LazyCrypto", StandardCharsets.UTF_8).asInt() & 2147483647;
+        return Hashing.sha256().hashString(string + ":why_so_salty#LazyCrypto", StandardCharsets.UTF_8).asInt() & Integer.MAX_VALUE;
     }
 }

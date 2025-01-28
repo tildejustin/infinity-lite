@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Mixin(RenderLayers.class)
 public abstract class RenderLayersMixin {
     @Inject(method = "method_23685", at = @At("TAIL"))
-    private static void addNeitherPortalToRenderLayer(HashMap<Block, RenderLayer> map, CallbackInfo ci) {
+    private static void setNeitherPortalRenderLayer(HashMap<Block, RenderLayer> map, CallbackInfo ci) {
         map.put(InfinityLite.NEITHER_PORTAL, RenderLayer.getTranslucent());
     }
 }

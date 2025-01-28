@@ -14,6 +14,7 @@ public abstract class ThrownEntityMixin {
     private boolean alsoCheckNeitherPortal(boolean original, @Local BlockState state) {
         if (!InfinityLite.enabled) return original;
 
+        // allows user to change portal type even if it's already a neither portal
         return original || state.isOf(InfinityLite.NEITHER_PORTAL);
     }
 }

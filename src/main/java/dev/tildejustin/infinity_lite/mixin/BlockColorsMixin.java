@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockColors.class)
 public abstract class BlockColorsMixin {
     @Inject(method = "create", at = @At(value = "TAIL"))
-    private static void changePortalColorIfEnd(CallbackInfoReturnable<BlockColors> cir) {
+    private static void addNeitherPortalColorProvider(CallbackInfoReturnable<BlockColors> cir) {
         cir.getReturnValue().registerColorProvider((state, world, pos, tintIndex) -> {
             if (world != null && pos != null) {
                 int dim = 2;
