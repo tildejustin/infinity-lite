@@ -30,7 +30,7 @@ public abstract class NetherPortalBlockMixin {
     @Environment(EnvType.CLIENT)
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
-        if (!InfinityLite.enabled) return original;
+        if (!InfinityLite.config.enabled) return original;
 
         if ((Object) this instanceof NeitherPortalBlock) {
             int i = 2;
@@ -43,7 +43,7 @@ public abstract class NetherPortalBlockMixin {
 
     @Inject(method = "onEntityCollision", at = @At("HEAD"))
     public void changeDimensionOfPortal(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo ci) {
-        if (!InfinityLite.enabled) return;
+        if (!InfinityLite.config.enabled) return;
 
         if (entity instanceof ItemEntity) {
             ItemStack itemStack = ((ItemEntity) entity).getStack();

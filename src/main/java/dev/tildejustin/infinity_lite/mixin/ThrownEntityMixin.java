@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ThrownEntityMixin {
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0))
     private boolean alsoCheckNeitherPortal(boolean original, @Local BlockState state) {
-        if (!InfinityLite.enabled) return original;
+        if (!InfinityLite.config.enabled) return original;
 
         // allows user to change portal type even if it's already a neither portal
         return original || state.isOf(InfinityLite.NEITHER_PORTAL);

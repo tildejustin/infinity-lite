@@ -13,7 +13,7 @@ public class NeitherPortalBlock extends NetherPortalBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (!InfinityLite.enabled) return;
+        if (!InfinityLite.config.enabled) return;
 
         super.onEntityCollision(state, world, pos, entity);
     }

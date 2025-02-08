@@ -1,14 +1,19 @@
 package dev.tildejustin.infinity_lite;
 
+import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import net.minecraft.block.Block;
-import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
-import org.mcsr.speedrunapi.config.api.annotations.Config;
 
 public class InfinityLite implements SpeedrunConfig {
-    @Config.Ignored
     public static Block NEITHER_PORTAL;
 
-    public static boolean enabled = true;
+    public static InfinityLite config;
+
+    public boolean enabled = true;
+
+    @Override
+    public void finishLoading() {
+        config = this;
+    }
 
     @Override
     public String modID() {

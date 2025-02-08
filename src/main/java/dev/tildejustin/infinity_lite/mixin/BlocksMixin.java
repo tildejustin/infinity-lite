@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Blocks.class)
 public abstract class BlocksMixin {
+    // need to create block before STATE_IDS is initialized, in the static block
     @Inject(method = "<clinit>", at = @At(value = "FIELD", target = "Lnet/minecraft/util/registry/Registry;BLOCK:Lnet/minecraft/util/registry/DefaultedRegistry;"))
     private static void addNeitherPortal(CallbackInfo ci) {
         InfinityLite.NEITHER_PORTAL = Registry.register(

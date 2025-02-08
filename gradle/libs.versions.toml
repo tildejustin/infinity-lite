@@ -4,7 +4,7 @@ yarn_mappings = "1.16.1-build.28"
 fabric_loader = "0.16.10"
 loom = "1.9-SNAPSHOT"
 vineflower = "1.10.1"
-speedrunapi = "v1.2.1"
+speedrunapi = "8497ae7479"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
