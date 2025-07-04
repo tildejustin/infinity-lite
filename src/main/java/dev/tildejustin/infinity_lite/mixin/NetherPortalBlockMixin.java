@@ -26,19 +26,23 @@ public abstract class NetherPortalBlockMixin {
     @Final
     public static EnumProperty<Direction.Axis> AXIS;
 
+    @Unique
+    private static final ParticleEffect NEITHER_PORTAL;
+
+    static {
+        int i = 2;
+        Vec3d vec3d = Vec3d.unpackRgb(i);
+        double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
+        NEITHER_PORTAL = new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
+    }
+
     @Dynamic // mcdev doesn't like @Coerce
     @Environment(EnvType.CLIENT)
     @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
     private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
         if (!InfinityLite.config.enabled) return original;
 
-        if ((Object) this instanceof NeitherPortalBlock) {
-            int i = 2;
-            Vec3d vec3d = Vec3d.unpackRgb(i);
-            double d = 1.0 + (double) (i >> 16 & 0xFF) / 255.0;
-            return new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
-        }
-        return original;
+        return (Object) this instanceof NeitherPortalBlock ? NEITHER_PORTAL : original;
     }
 
     @Inject(method = "onEntityCollision", at = @At("HEAD"))

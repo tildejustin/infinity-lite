@@ -23,12 +23,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow
     public abstract ServerWorld getServerWorld();
 
-    @ModifyExpressionValue(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getRegistryKey()Lnet/minecraft/util/registry/RegistryKey;", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V")))
+    @ModifyExpressionValue(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getRegistryKey()Lnet/minecraft/util/registry/RegistryKey;", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=moving")))
     private RegistryKey<World> doNotHardcodeEndSpawnIfFromNether(RegistryKey<World> dest) {
         if (!InfinityLite.config.enabled) return dest;
 
-        // anything other than end if not dest == end & curr == overworld
-        return dest == World.END && this.getServerWorld().getRegistryKey() == World.OVERWORLD ? World.END : World.OVERWORLD;
+        // cannot let this if statement run for end dest if current dim is nether
+        return dest == World.END && this.getServerWorld().getRegistryKey() == World.NETHER ? World.OVERWORLD /* not end */ : dest;
     }
 
     @ModifyExpressionValue(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/dimension/DimensionType;isShrunk()Z", ordinal = 3))
