@@ -10,8 +10,7 @@ public class InfinityLite implements SpeedrunConfig {
 
     public boolean enabled = true;
 
-    @Override
-    public void finishLoading() {
+    {
         config = this;
     }
 
