@@ -1,7 +1,6 @@
 package dev.tildejustin.infinity_lite.mixin;
 
 import com.google.common.collect.*;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tildejustin.infinity_lite.*;
 import dev.tildejustin.infinity_lite.block.NeitherPortalBlock;
 import net.fabricmc.api.*;
@@ -36,10 +35,9 @@ public abstract class NetherPortalBlockMixin {
         NEITHER_PORTAL = new DustParticleEffect((float) vec3d.x, (float) vec3d.y, (float) vec3d.z, (float) d);
     }
 
-    @Dynamic // mcdev doesn't like @Coerce
     @Environment(EnvType.CLIENT)
-    @ModifyExpressionValue(method = "randomDisplayTick", at = @At(value = "FIELD", target = "Lnet/minecraft/particle/ParticleTypes;PORTAL:Lnet/minecraft/particle/DefaultParticleType;"))
-    private @Coerce ParticleEffect changeParticleIfEnd(DefaultParticleType original, BlockState state, World world, BlockPos pos, Random random) {
+    @ModifyArg(method = "randomDisplayTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"))
+    private ParticleEffect changeParticleIfEnd(ParticleEffect original) {
         if (!InfinityLite.config.enabled) return original;
 
         return (Object) this instanceof NeitherPortalBlock ? NEITHER_PORTAL : original;
